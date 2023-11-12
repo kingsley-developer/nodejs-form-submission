@@ -27,7 +27,7 @@ function add_Data_DB(firstName, lastName, age, password, country, alive, occupat
             password: "football"
         });
         yield (yield conn).execute(`insert into kingdb_table(first_name, last_name, user_age, user_password, user_country, user_alive, user_occupation)
-                                                    values("${firstName}","${lastName}",${age},"${password}","${country}","${alive}","${occupation}")`);
+                                                    values(?,?,?,?,?,?,?)`, [firstName, lastName, age, password, country, alive, occupation]);
     });
 }
 exports.add_Data_DB = add_Data_DB;
@@ -42,8 +42,8 @@ function update_Data_DB(firstName, lastName, age, password, country, alive, occu
             port: 3306,
             password: "football"
         });
-        yield (yield conn).execute(`update kingdb_table set first_name="${firstName}", last_name="${lastName}", user_age=${age}, user_password="${password}", user_country="${country}", user_alive="${alive}", user_occupation="${occupation}"
-                                                     where first_name="${beforefirstName}" and last_name="${beforelastName}"`);
+        yield (yield conn).execute(`update kingdb_table set first_name=?, last_name=?, user_age=?, user_password=?, user_country=?, user_alive=?, user_occupation=?
+                                                     where first_name=? and last_name=?`, [firstName, lastName, age, password, country, alive, occupation, beforefirstName, beforelastName]);
     });
 }
 exports.update_Data_DB = update_Data_DB;
@@ -72,8 +72,7 @@ function get_Specific_User(firstName, lastName, age) {
             port: 3306,
             password: "football"
         });
-        const [rows] = yield (yield conn).execute(`SELECT * from kingdb_table where first_name="${firstName}" and last_name="${lastName}" and user_age =${age}`);
-        console.log(rows);
+        const [rows] = yield (yield conn).execute(`SELECT * from kingdb_table where first_name=? and last_name=? and user_age =?`, [firstName, lastName, age]);
         return rows;
     });
 }
@@ -88,8 +87,7 @@ function delete_All_User() {
             port: 3306,
             password: "football"
         });
-        const [rows] = yield (yield conn).execute("delete * from kingdb_table");
-        console.log(rows);
+        yield (yield conn).execute("delete from kingdb_table");
     });
 }
 exports.delete_All_User = delete_All_User;
@@ -103,7 +101,7 @@ function delete_Specific_User(firstName, lastName, age) {
             database: 'kingdb',
             rowsAsArray: true
         });
-        const [rows] = yield (yield conn).execute(`delete * from kingdb_table where first_name=? and last_name=? and user_age =?`, [`"${firstName}"`, `"${lastName}"`, `${age}`]);
+        yield (yield conn).execute(`delete from kingdb_table where first_name=? and last_name=? and user_age =?`, [firstName, lastName, age]);
     });
 }
 exports.delete_Specific_User = delete_Specific_User;

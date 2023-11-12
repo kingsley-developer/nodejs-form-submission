@@ -47,6 +47,7 @@ exports.delete_Users = delete_Users;
 function delete_User(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         let { firstname, lastname, age } = req.query;
+        console.log(firstname, lastname, age);
         firstname = String(firstname);
         lastname = String(lastname);
         let user_age = Number(age);

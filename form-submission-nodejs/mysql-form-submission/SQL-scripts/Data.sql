@@ -8,6 +8,5 @@ user_alive varchar(150),
 user_occupation varchar(150),
 primary key(user_id));
 
-describe kingdb_table;
 select * from kingdb_table;
 drop table kingdb_table;

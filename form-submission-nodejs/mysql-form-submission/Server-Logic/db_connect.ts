@@ -24,7 +24,8 @@ export async function add_Data_DB(firstName: string,
         }
             )
     await (await conn).execute(`insert into kingdb_table(first_name, last_name, user_age, user_password, user_country, user_alive, user_occupation)
-                                                    values("${firstName}","${lastName}",${age},"${password}","${country}","${alive}","${occupation}")`); 
+                                                    values(?,?,?,?,?,?,?)`,
+                                                    [firstName,lastName,age,password,country,alive,occupation]); 
 }
 
 export async function update_Data_DB(firstName: string, 
@@ -49,8 +50,9 @@ export async function update_Data_DB(firstName: string,
                                         password: "football"
                                     }
                                         )
-    await (await conn).execute(`update kingdb_table set first_name="${firstName}", last_name="${lastName}", user_age=${age}, user_password="${password}", user_country="${country}", user_alive="${alive}", user_occupation="${occupation}"
-                                                     where first_name="${beforefirstName}" and last_name="${beforelastName}"`);
+    await (await conn).execute(`update kingdb_table set first_name=?, last_name=?, user_age=?, user_password=?, user_country=?, user_alive=?, user_occupation=?
+                                                     where first_name=? and last_name=?`,
+                                                     [firstName,lastName,age,password,country,alive,occupation,beforefirstName,beforelastName]);
 }
 
 export async function get_All_User(){
@@ -80,8 +82,7 @@ export async function get_Specific_User(firstName: string, lastName: string, age
             password: "football"
         }
             )
-    const [rows] = await (await conn).execute(`SELECT * from kingdb_table where first_name="${firstName}" and last_name="${lastName}" and user_age =${age}`);
-    console.log(rows)
+    const [rows] = await (await conn).execute(`SELECT * from kingdb_table where first_name=? and last_name=? and user_age =?`, [firstName, lastName, age])
     return rows
 }
 
@@ -96,8 +97,7 @@ export async function delete_All_User(){
             password: "football"
         }
             )
-    const [rows] = await (await conn).execute("delete * from kingdb_table");
-    console.log(rows);
+    await (await conn).execute("delete from kingdb_table");
 }
 
 export async function delete_Specific_User(firstName: string, lastName: string, age: number){
@@ -111,5 +111,5 @@ export async function delete_Specific_User(firstName: string, lastName: string, 
             rowsAsArray: true
         }
             )
-    const [rows] = await (await conn).execute(`delete * from kingdb_table where first_name=? and last_name=? and user_age =?`, [`"${firstName}"`, `"${lastName}"`, `${age}`]);
+    await (await conn).execute(`delete from kingdb_table where first_name=? and last_name=? and user_age =?`, [firstName, lastName, age]);
 }

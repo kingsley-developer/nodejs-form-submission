@@ -31,6 +31,7 @@ export async function delete_Users (req: Request, res: Response, next: any) {
 
 export async function delete_User (req: Request, res: Response, next: any){
     let {firstname, lastname, age} = req.query
+    console.log(firstname, lastname, age)
     firstname = String(firstname)
     lastname = String(lastname)
     let user_age: number = Number(age)

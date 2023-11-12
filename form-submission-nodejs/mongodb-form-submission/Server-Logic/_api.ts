@@ -89,11 +89,14 @@ export default function Server(){
              age = Number(age)
              password = String(password)
              country = String(country)
-             alive = String(alive)
+             let user_alive: boolean = Boolean(alive)
              occupation = String(occupation)
         
-             await add_Data_DB(firstname,lastname,age,password,country,alive,occupation)
-             res.status(201).json({sentDate: date.calendar(), msg: "Account created"})
+             const response = await add_Data_DB(firstname,lastname,age,password,country, user_alive,occupation)
+             if(response){
+                return res.status(201).json({sentDate: date.calendar(), msg: "Account created"})   
+             }
+             res.status(404).json({sentDate: date.calendar(), msg: "Account creation failed"})
          }
          await add_data_middleware()
     })
