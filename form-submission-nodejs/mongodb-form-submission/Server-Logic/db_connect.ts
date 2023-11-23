@@ -12,7 +12,10 @@ export async function add_Data_DB(firstName: string,
                           ){
     try{
     password = await encrypt_password(password) 
-    mongoose.connect("mongodb://localhost:27017/empire")
+    mongoose.connect("mongodb://127.0.0.1:27017/empire", (err:any)=>{
+        if(err) console.log(err)
+        else console.log("Connected")
+    })
     const user = new Customers({
         firstName,
         lastName,
@@ -25,8 +28,8 @@ export async function add_Data_DB(firstName: string,
 await user.save()
 return true
 }
-catch(e){
-    console.log(e)
+catch(e: any){
+    console.log("Failed to connect ",e.message)
     return false
 }
 }
@@ -48,12 +51,47 @@ export async function update_Data_DB(firstName: string,
 export async function get_All_User(){
 }
 
-export async function get_Specific_User(firstName: string, lastName: string, age: number){
-    
+export async function get_Specific_User(user_id:string){
+    mongoose.connect("mongodb://127.0.0.1:27017/empire", (err:any)=>{
+        if(err) console.log(err)
+        else console.log("Connected")
+    })
+    try{
+        const user = await Customers.findById(user_id)
+        return user
+    }
+    catch(e:any){
+        console.log(e.message)
+    }
 }
 
 export async function delete_All_User(){
+    mongoose.connect("mongodb://127.0.0.1:27017/empire", (err:any)=>{
+        if(err) console.log(err)
+        else console.log("Connected")
+    })
+    try{
+        
+        mongoose.deleteModel("customers")
+        return true
+    }
+    catch(e:any){
+        console.log(e.message)
+        return false
+    }
 }
 
-export async function delete_Specific_User(firstName: string, lastName: string, age: number){
+export async function delete_Specific_User(user_id: string){
+    mongoose.connect("mongodb://127.0.0.1:27017/empire", (err:any)=>{
+        if(err) console.log(err)
+        else console.log("Connected")
+    })
+    try{
+        await Customers.findByIdAndDelete(user_id)
+        return true
+    }
+    catch(e:any){
+        console.log(e.message)
+        return false
+    }
 }

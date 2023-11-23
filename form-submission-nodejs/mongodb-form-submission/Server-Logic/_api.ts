@@ -14,7 +14,7 @@ app.use(cors({methods: ['GET', 'PUT', 'POST', 'DELETE']}))
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
 app.use("/get_users", get_All_User)
-app.use("/get_user/query?", get_User)
+app.use("/get_user", get_User)
 app.use("/delete_users", delete_Users)
 app.delete("/delete_user/query?", delete_User)
 app.use("/submit_data",  [check("firstname").notEmpty().withMessage("Firstname cannot be empty"),

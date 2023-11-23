@@ -49,7 +49,7 @@ app.use((0, cors_1.default)({ methods: ['GET', 'PUT', 'POST', 'DELETE'] }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use("/get_users", middleware_1.get_All_User);
-app.use("/get_user/query?", middleware_1.get_User);
+app.use("/get_user", middleware_1.get_User);
 app.use("/delete_users", middleware_1.delete_Users);
 app.delete("/delete_user/query?", middleware_1.delete_User);
 app.use("/submit_data", [(0, express_validator_1.check)("firstname").notEmpty().withMessage("Firstname cannot be empty"),

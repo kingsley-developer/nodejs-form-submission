@@ -20,7 +20,12 @@ function add_Data_DB(firstName, lastName, age, password, country, alive, occupat
     return __awaiter(this, void 0, void 0, function* () {
         try {
             password = yield (0, utils_1.encrypt_password)(password);
-            mongoose_1.default.connect("mongodb://localhost:27017/empire");
+            mongoose_1.default.connect("mongodb://127.0.0.1:27017/empire", (err) => {
+                if (err)
+                    console.log(err);
+                else
+                    console.log("Connected");
+            });
             const user = new schema_1.default({
                 firstName,
                 lastName,
@@ -34,7 +39,7 @@ function add_Data_DB(firstName, lastName, age, password, country, alive, occupat
             return true;
         }
         catch (e) {
-            console.log(e);
+            console.log("Failed to connect ", e.message);
             return false;
         }
     });
@@ -51,18 +56,59 @@ function get_All_User() {
     });
 }
 exports.get_All_User = get_All_User;
-function get_Specific_User(firstName, lastName, age) {
+function get_Specific_User(user_id) {
     return __awaiter(this, void 0, void 0, function* () {
+        mongoose_1.default.connect("mongodb://127.0.0.1:27017/empire", (err) => {
+            if (err)
+                console.log(err);
+            else
+                console.log("Connected");
+        });
+        try {
+            const user = yield schema_1.default.findById(user_id);
+            return user;
+        }
+        catch (e) {
+            console.log(e.message);
+        }
     });
 }
 exports.get_Specific_User = get_Specific_User;
 function delete_All_User() {
     return __awaiter(this, void 0, void 0, function* () {
+        mongoose_1.default.connect("mongodb://127.0.0.1:27017/empire", (err) => {
+            if (err)
+                console.log(err);
+            else
+                console.log("Connected");
+        });
+        try {
+            mongoose_1.default.deleteModel("customers");
+            return true;
+        }
+        catch (e) {
+            console.log(e.message);
+            return false;
+        }
     });
 }
 exports.delete_All_User = delete_All_User;
-function delete_Specific_User(firstName, lastName, age) {
+function delete_Specific_User(user_id) {
     return __awaiter(this, void 0, void 0, function* () {
+        mongoose_1.default.connect("mongodb://127.0.0.1:27017/empire", (err) => {
+            if (err)
+                console.log(err);
+            else
+                console.log("Connected");
+        });
+        try {
+            yield schema_1.default.findByIdAndDelete(user_id);
+            return true;
+        }
+        catch (e) {
+            console.log(e.message);
+            return false;
+        }
     });
 }
 exports.delete_Specific_User = delete_Specific_User;

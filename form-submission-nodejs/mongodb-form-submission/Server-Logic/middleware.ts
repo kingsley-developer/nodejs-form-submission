@@ -13,30 +13,36 @@ export async function get_All_User (req: Request, res: Response, next: any) {
 }
 
 export async function get_User (req: Request, res: Response, next: any) {
-    let {firstname, lastname, age} = req.query
-    firstname = String(firstname)
-    lastname = String(lastname)
-    let user_age: number = Number(age)
-    let user = await get_Specific_User(firstname, lastname, user_age)
-    res.status(200).json(user)
+    let {id} = req.query
+    id = String(id)
+    const date = moment().calendar()
+    let user = await get_Specific_User(id)
+    if(user){
+        return res.status(200).json(user)
+    }
+    res.status(404).json({date, err:"Cant find user"})
     next()
 }
 
+
 export async function delete_Users (req: Request, res: Response, next: any) {
     let date = moment()
-    await delete_All_User()
-    res.status(200).json({time: date.calendar(), msg:"All users deleted"})
+    let status: boolean = await delete_All_User()
+    if(status){
+       return res.status(200).json({time: date.calendar(), msg:"All users deleted"})
+    }
+    res.status(200).json({time: date.calendar(), msg:"Error users not deleted"})
     next()
 }
 
 export async function delete_User (req: Request, res: Response, next: any){
-    let {firstname, lastname, age} = req.query
-    console.log(firstname, lastname, age)
-    firstname = String(firstname)
-    lastname = String(lastname)
-    let user_age: number = Number(age)
+    let {id} = req.query
+    id = String(id)
     let date = moment()
-    await delete_Specific_User(firstname, lastname, user_age)
-    res.status(200).json({time: date.calendar(), msg:"User deleted"})
+    let status: boolean = await delete_Specific_User(id)
+    if(status) {
+        return res.status(200).json({time: date.calendar(), msg:"User deleted"})
+    }
+    res.status(404).json({time: date.calendar(), msg:"User was not deleted"})
     next()
 }

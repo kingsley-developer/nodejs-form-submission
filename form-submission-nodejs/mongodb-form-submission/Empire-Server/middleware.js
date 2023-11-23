@@ -25,12 +25,14 @@ function get_All_User(req, res, next) {
 exports.get_All_User = get_All_User;
 function get_User(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        let { firstname, lastname, age } = req.query;
-        firstname = String(firstname);
-        lastname = String(lastname);
-        let user_age = Number(age);
-        let user = yield (0, db_connect_1.get_Specific_User)(firstname, lastname, user_age);
-        res.status(200).json(user);
+        let { id } = req.query;
+        id = String(id);
+        const date = (0, moment_1.default)().calendar();
+        let user = yield (0, db_connect_1.get_Specific_User)(id);
+        if (user) {
+            return res.status(200).json(user);
+        }
+        res.status(404).json({ date, err: "Cant find user" });
         next();
     });
 }
@@ -38,22 +40,25 @@ exports.get_User = get_User;
 function delete_Users(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         let date = (0, moment_1.default)();
-        yield (0, db_connect_1.delete_All_User)();
-        res.status(200).json({ time: date.calendar(), msg: "All users deleted" });
+        let status = yield (0, db_connect_1.delete_All_User)();
+        if (status) {
+            return res.status(200).json({ time: date.calendar(), msg: "All users deleted" });
+        }
+        res.status(200).json({ time: date.calendar(), msg: "Error users not deleted" });
         next();
     });
 }
 exports.delete_Users = delete_Users;
 function delete_User(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        let { firstname, lastname, age } = req.query;
-        console.log(firstname, lastname, age);
-        firstname = String(firstname);
-        lastname = String(lastname);
-        let user_age = Number(age);
+        let { id } = req.query;
+        id = String(id);
         let date = (0, moment_1.default)();
-        yield (0, db_connect_1.delete_Specific_User)(firstname, lastname, user_age);
-        res.status(200).json({ time: date.calendar(), msg: "User deleted" });
+        let status = yield (0, db_connect_1.delete_Specific_User)(id);
+        if (status) {
+            return res.status(200).json({ time: date.calendar(), msg: "User deleted" });
+        }
+        res.status(404).json({ time: date.calendar(), msg: "User was not deleted" });
         next();
     });
 }
