@@ -6,9 +6,12 @@ import { get_All_User as getUsersTotal,
         delete_Specific_User} from "./db_connect";
 
 
-export async function get_All_User (req: Request, res: Response, next: any) {
+export async function get_All_User (_req: Request, res: Response, next: any) {
     let users =  await getUsersTotal()
-    res.status(200).json(users)
+    if(users){
+        return res.status(200).json(users)    
+    }
+    res.status(404).json({date:moment().calendar(), err:"Cant find users"})
     next()
 }
 
@@ -25,7 +28,7 @@ export async function get_User (req: Request, res: Response, next: any) {
 }
 
 
-export async function delete_Users (req: Request, res: Response, next: any) {
+export async function delete_Users (_req: Request, res: Response, next: any) {
     let date = moment()
     let status: boolean = await delete_All_User()
     if(status){

@@ -14,7 +14,7 @@ app.use(cors({methods: ['GET', 'PUT', 'POST', 'DELETE']}))
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
 app.use("/get_users", get_All_User)
-app.use("/get_user", get_User)
+app.use("/get_user/query?", get_User)
 app.use("/delete_users", delete_Users)
 app.delete("/delete_user/query?", delete_User)
 app.use("/submit_data",  [check("firstname").notEmpty().withMessage("Firstname cannot be empty"),
@@ -33,23 +33,22 @@ app.use("/update_data",  [check("firstname").notEmpty().withMessage("Firstname c
                            check("country").notEmpty().withMessage("Country cannot be empty"),
                            check("alive").notEmpty().withMessage("Alive cannot be empty"),
                            check("occupation").notEmpty().withMessage("Occupation cannot be empty"),
-                           check("beforefirstname").notEmpty().withMessage("beforefirstname cannot be empty"),
-                           check("beforelastname").notEmpty().withMessage("beforelastname cannot be empty")
+                           check("id").notEmpty().withMessage("id cannot be empty")
                         ]
                            )                           
 let {PORT} = process.env;
 let portnumber: number = Number(PORT);
 
 export default function Server(){
-    app.get("/get_users", (req: Request, res: Response)=>{})
-    app.get("/get_user/query?", (req: Request, res: Response)=>{})
-    app.delete("/delete_users", (req: Request, res: Response)=>{})
-    app.delete("/delete_user/query?", (req: Request, res: Response)=>{})
+    app.get("/get_users", (_req: Request, _res: Response)=>{})
+    app.get("/get_user/query?", (_req: Request, _res: Response)=>{})
+    app.delete("/delete_users", (_req: Request, _res: Response)=>{})
+    app.delete("/delete_user/query?", (_req: Request, _res: Response)=>{})
 
     app.put("/update_data/query?", async(req: Request, res: Response)=>{
         async function add_data_middleware(){
    
-            let {firstname, lastname, age, password,country, alive, occupation, beforefirstname,  beforelastname} = req.query;
+            let {firstname, lastname, age, password,country, alive, occupation, id} = req.query;
             
             const err = validationResult(req)
        
@@ -64,10 +63,9 @@ export default function Server(){
             country = String(country)
             alive = String(alive)
             occupation = String(occupation)
-            beforefirstname = String( beforefirstname)
-            beforelastname = String(beforelastname)
+            id = String( id)
        
-            await update_Data_DB(firstname,lastname,user_age,password,country,alive,occupation,  beforefirstname, beforelastname)
+            await update_Data_DB(firstname,lastname,user_age,password,country,alive,occupation, id)
             res.status(200).json({sentDate: date.calendar(), msg: "Account updated"})
         }
         await add_data_middleware()
@@ -100,7 +98,7 @@ export default function Server(){
          }
          await add_data_middleware()
     })
-    app.all("*",(req: Request, res: Response)=>{
+    app.all("*",(_req: Request, res: Response)=>{
         res.status(404).send("<h1>Page not found</h1>")
     })
     app.listen(portnumber, ()=> console.log(`Server listening on port: ${portnumber}`))

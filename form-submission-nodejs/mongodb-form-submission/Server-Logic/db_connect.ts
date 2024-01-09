@@ -41,14 +41,44 @@ export async function update_Data_DB(firstName: string,
                             country: string,
                             alive: string,
                             occupation: string,
-                            beforefirstName: string,
-                            beforelastName: string
+                            previous_id: string
                             ){ 
-    
-    password = await encrypt_password(password)                            
+                                try{
+                                    password = await encrypt_password(password) 
+                                    mongoose.connect("mongodb://127.0.0.1:27017/empire", (err:any)=>{
+                                        if(err) console.log(err)
+                                        else console.log("Connected")
+                                    })
+                                    await Customers.findByIdAndUpdate(previous_id, {
+                                        firstName,
+                                        lastName,
+                                        age,
+                                        password,
+                                        country,
+                                        alive,
+                                        occupation
+                                                                                    })
+                                return true
+                                }
+                                catch(e: any){
+                                    console.log("Failed to connect ",e.message)
+                                    return false
+                                }                            
 }
 
 export async function get_All_User(){
+    mongoose.connect("mongodb://127.0.0.1:27017/empire", (err:any)=>{
+        if(err) console.log(err)
+        else console.log("Connected")
+    })
+    try{
+        const users = await Customers.find({})
+        console.log(users)
+        return users
+    }
+    catch(e:any){
+        console.log(e.message)
+    }
 }
 
 export async function get_Specific_User(user_id:string){
@@ -58,10 +88,12 @@ export async function get_Specific_User(user_id:string){
     })
     try{
         const user = await Customers.findById(user_id)
+        console.log(user)
         return user
     }
     catch(e:any){
         console.log(e.message)
+        return false
     }
 }
 
@@ -71,8 +103,7 @@ export async function delete_All_User(){
         else console.log("Connected")
     })
     try{
-        
-        mongoose.deleteModel("customers")
+        await Customers.deleteMany({})
         return true
     }
     catch(e:any){

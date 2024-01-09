@@ -43,7 +43,5 @@ const customerSchema = new mongoose.Schema({
         required: true
     }
 }
-//{strictQuery: true, query:true}
 )
-//customerSchemamongoose.set('strictQuery', true)
 export default mongoose.model("customers", customerSchema)

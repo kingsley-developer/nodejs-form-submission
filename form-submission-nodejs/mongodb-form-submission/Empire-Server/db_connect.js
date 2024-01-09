@@ -45,14 +45,50 @@ function add_Data_DB(firstName, lastName, age, password, country, alive, occupat
     });
 }
 exports.add_Data_DB = add_Data_DB;
-function update_Data_DB(firstName, lastName, age, password, country, alive, occupation, beforefirstName, beforelastName) {
+function update_Data_DB(firstName, lastName, age, password, country, alive, occupation, previous_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        password = yield (0, utils_1.encrypt_password)(password);
+        try {
+            password = yield (0, utils_1.encrypt_password)(password);
+            mongoose_1.default.connect("mongodb://127.0.0.1:27017/empire", (err) => {
+                if (err)
+                    console.log(err);
+                else
+                    console.log("Connected");
+            });
+            yield schema_1.default.findByIdAndUpdate(previous_id, {
+                firstName,
+                lastName,
+                age,
+                password,
+                country,
+                alive,
+                occupation
+            });
+            return true;
+        }
+        catch (e) {
+            console.log("Failed to connect ", e.message);
+            return false;
+        }
     });
 }
 exports.update_Data_DB = update_Data_DB;
 function get_All_User() {
     return __awaiter(this, void 0, void 0, function* () {
+        mongoose_1.default.connect("mongodb://127.0.0.1:27017/empire", (err) => {
+            if (err)
+                console.log(err);
+            else
+                console.log("Connected");
+        });
+        try {
+            const users = yield schema_1.default.find({});
+            console.log(users);
+            return users;
+        }
+        catch (e) {
+            console.log(e.message);
+        }
     });
 }
 exports.get_All_User = get_All_User;
@@ -66,10 +102,12 @@ function get_Specific_User(user_id) {
         });
         try {
             const user = yield schema_1.default.findById(user_id);
+            console.log(user);
             return user;
         }
         catch (e) {
             console.log(e.message);
+            return false;
         }
     });
 }
@@ -83,7 +121,7 @@ function delete_All_User() {
                 console.log("Connected");
         });
         try {
-            mongoose_1.default.deleteModel("customers");
+            yield schema_1.default.deleteMany({});
             return true;
         }
         catch (e) {

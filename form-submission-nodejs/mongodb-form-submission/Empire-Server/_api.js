@@ -49,7 +49,7 @@ app.use((0, cors_1.default)({ methods: ['GET', 'PUT', 'POST', 'DELETE'] }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use("/get_users", middleware_1.get_All_User);
-app.use("/get_user", middleware_1.get_User);
+app.use("/get_user/query?", middleware_1.get_User);
 app.use("/delete_users", middleware_1.delete_Users);
 app.delete("/delete_user/query?", middleware_1.delete_User);
 app.use("/submit_data", [(0, express_validator_1.check)("firstname").notEmpty().withMessage("Firstname cannot be empty"),
@@ -66,20 +66,19 @@ app.use("/update_data", [(0, express_validator_1.check)("firstname").notEmpty().
     (0, express_validator_1.check)("country").notEmpty().withMessage("Country cannot be empty"),
     (0, express_validator_1.check)("alive").notEmpty().withMessage("Alive cannot be empty"),
     (0, express_validator_1.check)("occupation").notEmpty().withMessage("Occupation cannot be empty"),
-    (0, express_validator_1.check)("beforefirstname").notEmpty().withMessage("beforefirstname cannot be empty"),
-    (0, express_validator_1.check)("beforelastname").notEmpty().withMessage("beforelastname cannot be empty")
+    (0, express_validator_1.check)("id").notEmpty().withMessage("id cannot be empty")
 ]);
 let { PORT } = process.env;
 let portnumber = Number(PORT);
 function Server() {
-    app.get("/get_users", (req, res) => { });
-    app.get("/get_user/query?", (req, res) => { });
-    app.delete("/delete_users", (req, res) => { });
-    app.delete("/delete_user/query?", (req, res) => { });
+    app.get("/get_users", (_req, _res) => { });
+    app.get("/get_user/query?", (_req, _res) => { });
+    app.delete("/delete_users", (_req, _res) => { });
+    app.delete("/delete_user/query?", (_req, _res) => { });
     app.put("/update_data/query?", (req, res) => __awaiter(this, void 0, void 0, function* () {
         function add_data_middleware() {
             return __awaiter(this, void 0, void 0, function* () {
-                let { firstname, lastname, age, password, country, alive, occupation, beforefirstname, beforelastname } = req.query;
+                let { firstname, lastname, age, password, country, alive, occupation, id } = req.query;
                 const err = (0, express_validator_1.validationResult)(req);
                 if (!err.isEmpty()) {
                     return res.status(404).json({ sentDate: date.calendar(), msg: err.array() });
@@ -91,9 +90,8 @@ function Server() {
                 country = String(country);
                 alive = String(alive);
                 occupation = String(occupation);
-                beforefirstname = String(beforefirstname);
-                beforelastname = String(beforelastname);
-                yield (0, db_connect_1.update_Data_DB)(firstname, lastname, user_age, password, country, alive, occupation, beforefirstname, beforelastname);
+                id = String(id);
+                yield (0, db_connect_1.update_Data_DB)(firstname, lastname, user_age, password, country, alive, occupation, id);
                 res.status(200).json({ sentDate: date.calendar(), msg: "Account updated" });
             });
         }
@@ -123,7 +121,7 @@ function Server() {
         }
         yield add_data_middleware();
     }));
-    app.all("*", (req, res) => {
+    app.all("*", (_req, res) => {
         res.status(404).send("<h1>Page not found</h1>");
     });
     app.listen(portnumber, () => console.log(`Server listening on port: ${portnumber}`));

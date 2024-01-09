@@ -46,9 +46,6 @@ const customerSchema = new mongoose_1.default.Schema({
         type: String,
         required: true
     }
-}
-//{strictQuery: true, query:true}
-);
-//customerSchemamongoose.set('strictQuery', true)
+});
 exports.default = mongoose_1.default.model("customers", customerSchema);
 //# sourceMappingURL=schema.js.map

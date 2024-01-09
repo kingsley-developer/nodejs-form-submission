@@ -15,10 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.delete_User = exports.delete_Users = exports.get_User = exports.get_All_User = void 0;
 const moment_1 = __importDefault(require("moment"));
 const db_connect_1 = require("./db_connect");
-function get_All_User(req, res, next) {
+function get_All_User(_req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         let users = yield (0, db_connect_1.get_All_User)();
-        res.status(200).json(users);
+        if (users) {
+            return res.status(200).json(users);
+        }
+        res.status(404).json({ date: (0, moment_1.default)().calendar(), err: "Cant find users" });
         next();
     });
 }
@@ -37,7 +40,7 @@ function get_User(req, res, next) {
     });
 }
 exports.get_User = get_User;
-function delete_Users(req, res, next) {
+function delete_Users(_req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         let date = (0, moment_1.default)();
         let status = yield (0, db_connect_1.delete_All_User)();
